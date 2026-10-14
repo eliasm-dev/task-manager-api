@@ -1,4 +1,5 @@
 # TaskFlow API
+![TaskFlow API Tests](https://github.com/eliasm-dev/task-manager-api/actions/workflows/tests.yml/badge.svg)
 
 A RESTful task management API built with **FastAPI, PostgreSQL, SQLAlchemy, and JWT authentication**. This project demonstrates backend development fundamentals, secure user authentication, database migrations, and automated testing.
 
