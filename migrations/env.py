@@ -1,15 +1,15 @@
 
 import os
-from dotenv import load_dotenv
-
-load_dotenv()
 from logging.config import fileConfig
 
+from dotenv import load_dotenv
 from alembic import context
 from sqlalchemy import engine_from_config, pool
 
 from app.database import Base
 from app import models
+
+load_dotenv()
 
 config = context.config
 
@@ -19,10 +19,16 @@ if config.config_file_name is not None:
 target_metadata = Base.metadata
 
 
+def get_database_url():
+    return os.getenv(
+        "DATABASE_URL",
+        config.get_main_option("sqlalchemy.url"),
+    )
+
+
 def run_migrations_offline() -> None:
-    url = config.get_main_option("sqlalchemy.url")
     context.configure(
-        url=url,
+        url=get_database_url(),
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
@@ -34,18 +40,11 @@ def run_migrations_offline() -> None:
 
 def run_migrations_online() -> None:
     configuration = config.get_section(
-        config.config_ini_section,
-        {},
-    )
-    configuration["sqlalchemy.url"] = os.environ.get(
-        "TEST_DATABASE_URL",
-        config.get_main_option("sqlalchemy.url"),
-    )
-database_url = os.getenv("DATABASE_URL")
+        config.config_ini_section
+    ) or {}
 
-if database_url:
-    configuration = config.get_section(config.config_ini_section)
-    configuration["sqlalchemy.url"] = database_url
+    configuration["sqlalchemy.url"] = get_database_url()
+
     connectable = engine_from_config(
         configuration,
         prefix="sqlalchemy.",
