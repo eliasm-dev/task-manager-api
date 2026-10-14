@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Virtual environment
+.venv/
+
+# Local database
+tasks.db
+
+# Environment variables
+.env
+
+# Editors
+.vscode/
